@@ -6,7 +6,7 @@ from .views import preview_menu
 
 urlpatterns = [
 
-     path('', views.home, name='home'),
+    path('', views.home, name='home'),
     path('about/', views.about, name='about'),
     path('features/', views.features, name='features'),
     path('pricing/', views.pricing, name='pricing'),
@@ -77,12 +77,10 @@ urlpatterns = [
     path('media-library/update-name/<int:image_id>/',
          views.update_image_name, name='update_image_name'),
          path('menus/images/<int:image_id>/edit-name/', views.edit_image_name, name='edit_image_name'),
-path('preview/menu/<int:published_menu_id>/', preview_menu, name='preview_menu'),
-path('publish/select-template-and-menu/', views.select_template_and_menu, name='select_template_and_menu'),
-path('media-library/transform/', views.transform_image, name='transform_image'),
-path('media-library/save-changes/', views.save_image_changes, name='save_image_changes'),
-path('verify-password/', views.verify_password, name='verify_password'),
-
-
+     path('preview/menu/<int:published_menu_id>/', preview_menu, name='preview_menu'),
+     path('publish/select-template-and-menu/', views.select_template_and_menu, name='select_template_and_menu'),
+     path('media-library/transform/', views.transform_image, name='transform_image'),
+     path('media-library/save-changes/', views.save_image_changes, name='save_image_changes'),
+     path('verify-password/', views.verify_password, name='verify_password'),
 
 ]

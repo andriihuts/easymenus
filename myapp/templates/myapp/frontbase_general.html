@@ -12,18 +12,21 @@
     {% endblock %}
 </head>
 <body class="min-h-screen bg-white">
-   
 
     <!-- Main Content -->
-
-        {% block content %}
-        {% endblock %}
+    {% block content %}
+    {% endblock %}
 
     {% block extra_js %}{% endblock %}
     
     <script>
         // Mobile menu toggle
-     
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
     </script>
 </body>
 </html>

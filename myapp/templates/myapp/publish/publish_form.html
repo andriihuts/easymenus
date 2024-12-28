@@ -1,0 +1,260 @@
+{% extends "myapp/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Publish Your Menu</h1>
+                <p class="mt-2 text-gray-600">Configure publishing options for {{ template.name }}</p>
+            </div>
+            <a href="{% url 'publish_dashboard' %}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Back to Templates
+            </a>
+        </div>
+    </div>
+    {% if form.errors %}
+    <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Please correct the following errors:</h3>
+                <div class="mt-2 text-sm text-red-700">
+                    {{ form.errors }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <form method="post" class="space-y-8" id="publishForm">
+        {% csrf_token %}
+
+        <!-- Hidden fields for customizations -->
+        <input type="hidden" name="primary_color" id="primary_color">
+        <input type="hidden" name="secondary_color" id="secondary_color">
+        <input type="hidden" name="background_color" id="background_color">
+        <input type="hidden" name="heading_font" id="heading_font">
+        <input type="hidden" name="body_font" id="body_font">
+        <input type="hidden" name="custom_css" id="custom_css">
+
+        <!-- Main Configuration Card -->
+        <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+            <div class="p-6 space-y-6">
+                <!-- Menu Selection -->
+                <div>
+                    <label for="{{ form.menu.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Select Menu to Publish
+                    </label>
+                    <div class="bg-white shadow-sm rounded-lg p-6">
+                        {{ form.menu.errors }}
+                        <label class="block text-sm font-medium text-gray-700">
+                            {{ form.menu.label }}
+                        </label>
+
+                        {{ form.menu }}
+                        
+                        {% if form.overwrite_existing %}
+                        <div class="mt-4">
+                            <div class="flex items-start">
+                                <div class="flex items-center h-5">
+                                    {{ form.overwrite_existing }}
+                                </div>
+                                <div class="ml-3 text-sm">
+                                    <label for="{{ form.overwrite_existing.id_for_label }}" class="font-medium text-gray-700">
+                                        {{ form.overwrite_existing.label }}
+                                    </label>
+                                    <p class="text-gray-500">{{ form.overwrite_existing.help_text }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="{{ form.slug.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            Menu URL
+                        </label>
+                        <div class="mt-1 flex rounded-md shadow-sm">
+                            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                                {{ request.META.HTTP_HOST }}/m/
+                            </span>
+                            {{ form.slug }}
+                        </div>
+                        {% if form.slug.help_text %}
+                            <p class="mt-2 text-sm text-gray-500">{{ form.slug.help_text }}</p>
+                        {% endif %}
+                        {% if form.slug.errors %}
+                            <p class="mt-2 text-sm text-red-600">{{ form.slug.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if user.subscription.level == 'premium' %}
+                <!-- SEO Settings (Premium Feature) -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-medium text-gray-900">SEO Settings</h3>
+                    <div class="mt-4 space-y-4">
+                        <div>
+                            <label for="meta_title" class="block text-sm font-medium text-gray-700">
+                                Meta Title
+                            </label>
+                            <input type="text" name="meta_title" id="meta_title"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="meta_description" class="block text-sm font-medium text-gray-700">
+                                Meta Description
+                            </label>
+                            <textarea name="meta_description" id="meta_description" rows="3"
+                                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Social Media Preview -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-medium text-gray-900">Social Media Preview</h3>
+                    <div class="mt-4 space-y-4">
+                        <div>
+                            <label for="social_title" class="block text-sm font-medium text-gray-700">
+                                Social Media Title
+                            </label>
+                            <input type="text" name="social_title" id="social_title"
+                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="social_description" class="block text-sm font-medium text-gray-700">
+                                Social Media Description
+                            </label>
+                            <textarea name="social_description" id="social_description" rows="2"
+                                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Publishing Options -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="text-lg font-medium text-gray-900">Publishing Options</h3>
+                    <div class="mt-4 space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input type="checkbox" name="auto_update" id="auto_update"
+                                       class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="auto_update" class="font-medium text-gray-700">Enable Auto-Updates</label>
+                                <p class="text-gray-500">Automatically update the published menu when you make changes</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input type="checkbox" name="show_prices" id="show_prices"
+                                       class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="show_prices" class="font-medium text-gray-700">Display Prices</label>
+                                <p class="text-gray-500">Show item prices on the published menu</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="bg-gray-50 px-6 py-4 flex items-center justify-end space-x-4">
+                <button type="button" 
+                        onclick="window.location.href='{% url 'template_preview' template.id %}'"
+                        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Preview Again
+                </button>
+                <button type="submit"
+                        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Publish Menu
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-generate subdomain from menu name
+    const menuSelect = document.getElementById('{{ form.menu.id_for_label }}');
+    const subdomainInput = document.getElementById('{{ form.subdomain.id_for_label }}');
+
+    menuSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        if (selectedOption && !subdomainInput.value) {
+            // Convert menu name to URL-friendly format
+            const subdomain = selectedOption.text
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+            subdomainInput.value = subdomain;
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        // Get customizations from sessionStorage
+        const storedCustomizations = sessionStorage.getItem('template_customizations');
+        console.log('Raw stored customizations:', storedCustomizations);
+        
+        if (storedCustomizations) {
+            const customizations = JSON.parse(storedCustomizations);
+            console.log('Parsed customizations:', customizations);
+            
+            // Set form values
+            if (customizations.colors) {
+                document.getElementById('primary_color').value = customizations.colors.primary || '';
+                document.getElementById('secondary_color').value = customizations.colors.secondary || '';
+                document.getElementById('background_color').value = customizations.colors.background || '';
+            }
+            
+            if (customizations.fonts) {
+                document.getElementById('heading_font').value = customizations.fonts.heading || '';
+                document.getElementById('body_font').value = customizations.fonts.body || '';
+            }
+            
+            if (customizations.custom_css) {
+                document.getElementById('custom_css').value = customizations.custom_css;
+            }
+            
+            // Log the values that were set
+            console.log('Set form values:', {
+                primary_color: document.getElementById('primary_color').value,
+                secondary_color: document.getElementById('secondary_color').value,
+                background_color: document.getElementById('background_color').value,
+                heading_font: document.getElementById('heading_font').value,
+                body_font: document.getElementById('body_font').value,
+                custom_css: document.getElementById('custom_css').value
+            });
+        } else {
+            console.log('No stored customizations found');
+        }
+    } catch (error) {
+        console.error('Error processing customizations:', error);
+    }
+    
+    // Clear storage after form submission
+    document.getElementById('publishForm').addEventListener('submit', function() {
+        sessionStorage.removeItem('template_customizations');
+    });
+});
+
+</script>
+{% endblock %}
+{% endblock %}

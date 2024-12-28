@@ -1,0 +1,27 @@
+#imageModal {
+    max-height: 80vh;
+    max-width: 1200px;
+    width: 80%;
+    overflow: auto;
+}
+
+#imageModal img {
+    max-height: 80vh;
+    max-width: 100%;
+}
+
+/* Add these styles to your base template or CSS file */
+input[type="text"],
+input[type="url"],
+input[type="email"],
+textarea {
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm;
+}
+
+select {
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm;
+}
+
+.form-error {
+    @apply mt-1 text-sm text-red-600;
+}

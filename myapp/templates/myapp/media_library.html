@@ -1,0 +1,696 @@
+{% extends "myapp/base.html" %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Media Library</h1>
+
+    <div class="mb-6">
+        <form method="get" class="flex gap-2">
+            <input type="text" 
+                   name="search" 
+                   value="{{ search_query }}"
+                   placeholder="Search images by name..."
+                   class="flex-1 border rounded px-4 py-2">
+            <button type="submit" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Search
+            </button>
+        </form>
+    </div>
+
+            <div class="flex gap-4">
+                <button id="selectAllBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Select All
+                </button>
+                <button id="deleteSelectedBtn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 hidden">
+                    Delete Selected (<span id="selectedCount">0</span>)
+                </button>
+            </div>
+        </div>
+    
+        <!-- Upload Form -->
+        <form method="post" enctype="multipart/form-data" class="mb-8">
+            {% csrf_token %}
+            <input type="file" name="image" accept="image/*" class="block w-full mb-2" multiple>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 mt-3 rounded hover:bg-blue-600">Upload</button>
+        </form>
+    
+        <!-- Image Gallery -->
+        <div class="grid grid-cols-3 gap-4">
+            {% for image in images %}
+            <div class="border p-2 relative group">
+                <div class="absolute top-2 left-2 z-10">
+                    <input type="checkbox" 
+                           class="image-select w-5 h-5" 
+                           data-public-id="{{ image.public_id }}"
+                           aria-label="Select image">
+                </div>
+                <img src="{{ image.url }}?{{ settings.CLOUDINARY_URL_TRANSFORMATION }}" 
+                     alt="{{ image.name }}" 
+                     class="w-full h-32 object-cover cursor-pointer"
+                     crossorigin="anonymous"
+                     data-url="{{ image.url }}"
+                     onclick="openImageModal(this.dataset.url, '{{ image.public_id }}')">
+                
+                <!-- Image Name Display/Edit -->
+                <div class="mt-2">
+                    <form method="post" class="image-name-form hidden">
+                        {% csrf_token %}
+                        <input type="hidden" name="image_id" value="{{ image.id }}">
+                        <input type="text" 
+                               name="image_name" 
+                               value="{{ image.name }}"
+                               class="w-full px-2 py-1 border rounded">
+                    </form>
+                    <p class="image-name-display truncate">{{ image.name|default:image.public_id }}</p>
+                    <button onclick="toggleNameEdit(this)" 
+                            class="text-blue-500 hover:text-blue-700 text-sm">
+                        Edit Name
+                    </button>
+                </div>
+                
+                <div class="mt-2">
+                    <form method="post" action="{% url 'delete_image' public_id=image.public_id %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% empty %}
+            <p class="col-span-3 text-gray-700">No images found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Pagination controls -->
+{% if pagination %}
+<div class="mt-6 flex justify-center">
+    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+        {% if pagination.has_previous %}
+        <a href="?page={{ pagination.previous_page }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+            Previous
+        </a>
+        {% endif %}
+        
+        {% for page_num in pagination.page_range %}
+        <a href="?page={{ page_num }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium {% if page_num == pagination.current_page %}text-blue-600 bg-blue-50{% else %}text-gray-700 hover:bg-gray-50{% endif %}">
+            {{ page_num }}
+        </a>
+        {% endfor %}
+
+        {% if pagination.has_next %}
+        <a href="?page={{ pagination.next_page }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+            Next
+        </a>
+        {% endif %}
+    </nav>
+</div>
+{% endif %}
+
+<!-- Image Modal -->
+<div id="imageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white hover:text-gray-300">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+
+    <div class="bg-white p-6 rounded-lg shadow-xl w-11/12 max-w-6xl mx-auto my-8 max-h-[90vh] overflow-y-auto relative top-1/2 transform -translate-y-1/2">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">Image Editor</h3>
+            <button onclick="closeImageModal()" class="text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="flex gap-4">
+            <!-- Image preview -->
+            <div class="flex-1 relative">
+                <img id="modalImage" src="" alt="" class="max-h-[70vh] mx-auto">
+            </div>
+
+            <!-- Controls sidebar -->
+            <div class="w-64 space-y-4">
+                <!-- Cloudinary Transformations -->
+                <div class="border-b pb-4">
+                    <h4 class="font-semibold mb-2">Cloudinary Transformations</h4>
+                    <div class="space-y-2">
+                        <button onclick="applyCloudinaryTransform('auto_rotate')" 
+                                class="w-full bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600">
+                            Auto Rotate
+                        </button>
+                        <button onclick="applyCloudinaryTransform('remove_background')" 
+                                class="w-full bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600">
+                            Remove Background
+                        </button>
+                        <button onclick="applyCloudinaryTransform('auto_color')" 
+                                class="w-full bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600">
+                            Auto Color
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Manual Transformations -->
+                <div class="space-y-4">
+                    <h4 class="font-semibold">Manual Adjustments</h4>
+                    
+                    <!-- Crop -->
+                    <div>
+                        <label class="block text-sm mb-1">Crop</label>
+                        <button onclick="toggleCropMode()" 
+                                id="cropButton"
+                                class="w-full bg-gray-200 px-3 py-2 rounded hover:bg-gray-300">
+                            Start Cropping
+                        </button>
+                    </div>
+
+                    <!-- Rotate -->
+                    <div>
+                        <label class="block text-sm mb-1">Rotate</label>
+                        <div class="flex gap-2">
+                            <button onclick="rotateImage(-90)" 
+                                    class="flex-1 bg-gray-200 px-3 py-2 rounded hover:bg-gray-300">
+                                ↶ Left
+                            </button>
+                            <button onclick="rotateImage(90)" 
+                                    class="flex-1 bg-gray-200 px-3 py-2 rounded hover:bg-gray-300">
+                                Right ↷
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Brightness -->
+                    <div>
+                        <label class="block text-sm mb-1">Brightness</label>
+                        <div class="space-y-2">
+                            <input type="range" 
+                                   id="brightnessSlider"
+                                   min="-100" 
+                                   max="100" 
+                                   value="0" 
+                                   class="w-full"
+                                   oninput="previewBrightness(this.value)">
+                            <button onclick="applyBrightness()" 
+                                    class="w-full bg-gray-200 px-3 py-2 rounded hover:bg-gray-300">
+                                Apply Brightness
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Resize -->
+                    <div>
+                        <label class="block text-sm mb-1">Resize</label>
+                        <div class="flex gap-2">
+                            <input type="number" 
+                                   placeholder="Width" 
+                                   id="resizeWidth" 
+                                   onchange="updateResizeDimensions('width')"
+                                   class="flex-1 border rounded px-2 py-1">
+                            <input type="number" 
+                                   placeholder="Height" 
+                                   id="resizeHeight"
+                                   onchange="updateResizeDimensions('height')"
+                                   class="flex-1 border rounded px-2 py-1">
+                        </div>
+                        <button onclick="resizeImage()" 
+                                class="w-full mt-2 bg-gray-200 px-3 py-2 rounded hover:bg-gray-300">
+                            Apply Resize
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Save Changes -->
+                <div class="pt-4 border-t">
+                    <button onclick="saveChanges()" 
+                            class="w-full bg-green-500 text-white px-3 py-2 rounded hover:bg-green-600">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function toggleNameEdit(button) {
+        const container = button.closest('.border');
+        const form = container.querySelector('.image-name-form');
+        const display = container.querySelector('.image-name-display');
+        
+        if (form.classList.contains('hidden')) {
+            // Show edit form
+            form.classList.remove('hidden');
+            display.classList.add('hidden');
+            button.textContent = 'Save';
+            
+            // Focus the input
+            const input = form.querySelector('input[name="image_name"]');
+            input.focus();
+            input.select();
+        } else {
+            // Submit the form
+            form.submit();
+        }
+    }
+    
+    // Add enter key handler for the name edit forms
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.image-name-form').forEach(form => {
+            form.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    form.submit();
+                }
+            });
+        });
+    });
+
+function openImageModal(url, id) {
+    currentImageId = id;
+    currentTransformations = [];
+    const modalImage = document.getElementById('modalImage');
+    modalImage.crossOrigin = "anonymous";
+    
+    // Add timestamp to force fresh image load
+    const timestamp = new Date().getTime();
+    const baseUrl = url.split('?')[0];  // Remove any existing query parameters
+    modalImage.src = `${baseUrl}?t=${timestamp}`;
+    
+    document.getElementById('imageModal').classList.remove('hidden');
+    document.getElementById('imageModal').style.display = 'flex';
+    
+    // Initialize image dimensions for resize
+    modalImage.onload = function() {
+        document.getElementById('resizeWidth').value = this.naturalWidth;
+        document.getElementById('resizeHeight').value = this.naturalHeight;
+    };
+}
+
+function closeImageModal() {
+    if (cropperInstance) {
+        cropperInstance.destroy();
+        cropperInstance = null;
+    }
+    // Reset any active transformations
+    const img = document.getElementById('modalImage');
+    if (img) {
+        img.style.filter = 'none';
+    }
+    // Reset brightness slider if it exists
+    const brightnessSlider = document.getElementById('brightnessSlider');
+    if (brightnessSlider) {
+        brightnessSlider.value = 0;
+    }
+    // Hide the modal
+    const modal = document.getElementById('imageModal');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
+    // Clear transformations
+    currentTransformations = [];
+}
+
+function updateSelectedCount() {
+    const selectedCount = document.querySelectorAll('.image-select:checked').length;
+    document.getElementById('selectedCount').textContent = selectedCount;
+    document.getElementById('deleteSelectedBtn').classList.toggle('hidden', selectedCount === 0);
+}
+
+function getSelectedImages() {
+    const checkboxes = document.querySelectorAll('.image-select:checked');
+    return Array.from(checkboxes).map(cb => cb.dataset.publicId);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Select All functionality
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    let allSelected = false;
+
+    selectAllBtn.addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('.image-select');
+        allSelected = !allSelected;
+        checkboxes.forEach(cb => cb.checked = allSelected);
+        updateSelectedCount();
+        this.textContent = allSelected ? 'Deselect All' : 'Select All';
+    });
+
+    // Individual selection
+    document.querySelectorAll('.image-select').forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectedCount);
+    });
+
+    // Batch delete
+    document.getElementById('deleteSelectedBtn').addEventListener('click', function() {
+        const selectedImages = getSelectedImages();
+        if (!selectedImages.length) return;
+
+        if (confirm(`Are you sure you want to delete ${selectedImages.length} selected images?`)) {
+            fetch('/media-library/batch-delete/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({
+                    public_ids: selectedImages
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error deleting images: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error deleting images');
+            });
+        }
+    });
+});
+
+let currentImageId = null;
+let currentTransformations = [];
+let cropperInstance = null;
+
+function openImageModal(url, id) {
+    currentImageId = id;
+    currentTransformations = [];
+    const modalImage = document.getElementById('modalImage');
+    modalImage.crossOrigin = "anonymous";
+    
+    // Add timestamp to force fresh image load
+    const timestamp = new Date().getTime();
+    const baseUrl = url.split('?')[0];  // Remove any existing query parameters
+    modalImage.src = `${baseUrl}?t=${timestamp}`;
+    
+    document.getElementById('imageModal').classList.remove('hidden');
+    document.getElementById('imageModal').style.display = 'flex';
+    
+    // Initialize image dimensions for resize
+    modalImage.onload = function() {
+        document.getElementById('resizeWidth').value = this.naturalWidth;
+        document.getElementById('resizeHeight').value = this.naturalHeight;
+    };
+}
+
+// Cloudinary transformations
+async function applyCloudinaryTransform(type) {
+    try {
+        const response = await fetch('/media-library/transform/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                public_id: currentImageId,
+                transformation: type
+            })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            // Update the modal image
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = data.url + '?' + new Date().getTime(); // Add timestamp to bypass cache
+            
+            // Also update the thumbnail in the gallery if it exists
+            const galleryImage = document.querySelector(`img[data-public-id="${data.public_id}"]`);
+            if (galleryImage) {
+                galleryImage.src = data.url + '?' + new Date().getTime();
+            }
+            
+            currentTransformations.push(type);
+        } else {
+            alert('Error applying transformation: ' + data.error);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error applying transformation');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if Cropper is loaded
+    if (typeof Cropper === 'undefined') {
+        console.error('Cropper.js is not loaded!');
+        // Attempt to load it dynamically if needed
+        const cropperCSS = document.createElement('link');
+        cropperCSS.rel = 'stylesheet';
+        cropperCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css';
+        document.head.appendChild(cropperCSS);
+
+        const cropperScript = document.createElement('script');
+        cropperScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js';
+        document.head.appendChild(cropperScript);
+    }
+});
+
+function toggleCropMode() {
+    // Check if Cropper is available
+    if (typeof Cropper === 'undefined') {
+        alert('Image cropping is not available yet. Please try again in a moment.');
+        return;
+    }
+
+    const img = document.getElementById('modalImage');
+    const cropButton = document.getElementById('cropButton');
+    
+    if (cropperInstance) {
+        // If cropper is active, apply the crop
+        const canvas = cropperInstance.getCroppedCanvas();
+        const croppedImage = new Image();
+        croppedImage.crossOrigin = "anonymous";
+        croppedImage.onload = function() {
+            img.src = canvas.toDataURL('image/jpeg');
+            currentTransformations.push({type: 'crop', data: img.src});
+        };
+        croppedImage.src = canvas.toDataURL('image/jpeg');
+        
+        cropperInstance.destroy();
+        cropperInstance = null;
+        cropButton.textContent = 'Start Cropping';
+    } else {
+        // Start cropping
+        cropperInstance = new Cropper(img, {
+            aspectRatio: NaN,
+            viewMode: 2,
+            background: false,
+            modal: true,
+            zoomable: false,
+            cropBoxResizable: true
+        });
+        cropButton.textContent = 'Apply Crop';
+    }
+}
+
+function rotateImage(degrees) {
+    const img = document.getElementById('modalImage');
+    
+    // Create a new image with CORS settings
+    const corsImg = new Image();
+    corsImg.crossOrigin = "anonymous";
+    corsImg.onload = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set proper canvas dimensions for rotation
+        if (Math.abs(degrees) === 90 || Math.abs(degrees) === 270) {
+            canvas.width = corsImg.height;
+            canvas.height = corsImg.width;
+        } else {
+            canvas.width = corsImg.width;
+            canvas.height = corsImg.height;
+        }
+
+        // Move to center and rotate
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(degrees * Math.PI / 180);
+        ctx.drawImage(corsImg, -corsImg.width / 2, -corsImg.height / 2);
+
+        // Update the image
+        img.src = canvas.toDataURL('image/jpeg');
+        currentTransformations.push({type: 'rotate', degrees: degrees});
+    };
+    
+    corsImg.src = img.src;
+}
+
+function updateResizeDimensions(changedInput) {
+    const img = document.getElementById('modalImage');
+    const widthInput = document.getElementById('resizeWidth');
+    const heightInput = document.getElementById('resizeHeight');
+    
+    const aspectRatio = img.naturalWidth / img.naturalHeight;
+    
+    if (changedInput === 'width') {
+        const newWidth = parseInt(widthInput.value) || 0;
+        heightInput.value = Math.round(newWidth / aspectRatio);
+    } else {
+        const newHeight = parseInt(heightInput.value) || 0;
+        widthInput.value = Math.round(newHeight * aspectRatio);
+    }
+}
+
+function resizeImage() {
+    const width = document.getElementById('resizeWidth').value;
+    const height = document.getElementById('resizeHeight').value;
+    
+    if (!width || !height) {
+        alert('Please enter both width and height');
+        return;
+    }
+
+    const img = document.getElementById('modalImage');
+    
+    // Create a new image with CORS settings
+    const corsImg = new Image();
+    corsImg.crossOrigin = "anonymous";
+    corsImg.onload = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(corsImg, 0, 0, width, height);
+        img.src = canvas.toDataURL('image/jpeg');
+        currentTransformations.push({type: 'resize', width: width, height: height});
+    };
+    
+    corsImg.src = img.src;
+}
+
+// Update the brightness functions
+function previewBrightness(value) {
+    const img = document.getElementById('modalImage');
+    img.style.filter = `brightness(${100 + parseInt(value)}%)`;
+}
+
+function applyBrightness() {
+    const img = document.getElementById('modalImage');
+    const brightnessValue = document.getElementById('brightnessSlider').value;
+    
+    // Create a canvas to apply the brightness permanently
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Create a new image with CORS settings
+    const corsImg = new Image();
+    corsImg.crossOrigin = "anonymous";
+    
+    corsImg.onload = function() {
+        canvas.width = corsImg.width;
+        canvas.height = corsImg.height;
+        
+        // Draw the image with current brightness
+        ctx.filter = `brightness(${100 + parseInt(brightnessValue)}%)`;
+        ctx.drawImage(corsImg, 0, 0);
+        
+        // Reset the image's style and update its source
+        img.style.filter = 'none';
+        img.src = canvas.toDataURL('image/jpeg');
+        
+        // Store the transformation
+        currentTransformations.push({
+            type: 'brightness',
+            value: brightnessValue
+        });
+    };
+    
+    // Remove any existing filter and get the base image
+    const currentSrc = img.src;
+    img.style.filter = 'none';
+    corsImg.src = currentSrc;
+}
+
+// Update saveChanges to handle brightness properly
+async function saveChanges() {
+    try {
+        const img = document.getElementById('modalImage');
+        img.style.filter = 'none';
+        let imageData = img.src;
+
+        console.log('Saving changes for image:', currentImageId);
+
+        const response = await fetch('/media-library/save-changes/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                public_id: currentImageId,
+                image_data: imageData,
+                transformations: currentTransformations
+            })
+        });
+
+        const data = await response.json();
+        console.log('Server response:', data);
+
+        if (data.success) {
+            // Force reload all instances of this image in the media library
+            const timestamp = new Date().getTime();
+            const selector = `img[src*="${currentImageId.split('/').pop()}"]`;
+            const images = document.querySelectorAll(selector);
+            
+            images.forEach(imgElement => {
+                // Get the current src without any existing timestamp
+                let currentSrc = imgElement.src.split('?')[0];
+                
+                // Create a loading placeholder
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'absolute inset-0 bg-gray-200 animate-pulse';
+                imgElement.parentNode.insertBefore(loadingDiv, imgElement);
+                
+                // Create new image object
+                const newImg = new Image();
+                newImg.crossOrigin = "anonymous";
+                
+                // When the new image loads
+                newImg.onload = function() {
+                    loadingDiv.remove();
+                    imgElement.src = this.src;
+                };
+                
+                // Force browser to reload image by adding timestamp
+                const newSrc = `${currentSrc}?t=${timestamp}`;
+                newImg.src = newSrc;
+                imgElement.src = newSrc;
+            });
+
+            // Show success message
+            const successMessage = document.createElement('div');
+            successMessage.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50';
+            successMessage.textContent = 'Image updated successfully';
+            document.body.appendChild(successMessage);
+            
+            setTimeout(() => {
+                successMessage.remove();
+            }, 3000);
+
+            closeImageModal();
+        } else {
+            console.error('Error from server:', data.error || 'Error updating image');
+            alert('Error saving changes: ' + (data.error || 'Error updating image'));
+        }
+    } catch (error) {
+        console.error('Save changes error:', error);
+        alert('Error saving changes');
+    }
+}
+
+</script>
+{% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+{% endblock %}

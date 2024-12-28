@@ -1,0 +1,257 @@
+{% extends "myapp/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Customize Template</h1>
+                <p class="mt-2 text-gray-600">Customize how your menu looks and feels</p>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Available Templates</h2>
+                <ul class="list-disc pl-5 space-y-2">
+                    {% for template in templates %}
+                    <li>
+                        {{ template.name }} 
+                        {% if published_menu.template.id == template.id %}
+                        <span class="text-green-500">(Current)</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div>
+                <label for="template_id" class="block text-sm font-medium text-gray-700">Select a Template</label>
+                <select id="template_id" name="template_id" class="mt-1 block w-full rounded-md border-gray-300">
+                    {% for template in templates %}
+                    <option value="{{ template.id }}" {% if published_menu.template.id == template.id %}selected{% endif %}>
+                        {{ template.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <form method="post" class="mt-6 space-y-4">
+                {% csrf_token %}
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">Save Changes</button>
+            </form>
+            <div class="flex space-x-4">
+                <button type="button"
+                        onclick="previewChanges()"
+                        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Preview Changes
+                </button>
+                <a href="{% url 'publish_dashboard' %}"
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Customization Options -->
+        <div class="lg:col-span-1 space-y-6">
+            <form method="post" id="customizeForm" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Color Scheme -->
+                <div class="bg-white shadow-sm rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Color Scheme</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Primary Color</label>
+                            <input type="color" name="primary_color" value="{{ form.initial.custom_colors.primary|default:'#000000' }}"
+                                   class="mt-1 block w-full h-10 p-1 rounded-md border-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Secondary Color</label>
+                            <input type="color" name="secondary_color" value="{{ form.initial.custom_colors.secondary|default:'#666666' }}"
+                                   class="mt-1 block w-full h-10 p-1 rounded-md border-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Background Color</label>
+                            <input type="color" name="background_color" value="{{ form.initial.custom_colors.background|default:'#ffffff' }}"
+                                   class="mt-1 block w-full h-10 p-1 rounded-md border-gray-300">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography -->
+                <div class="bg-white shadow-sm rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Typography</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Heading Font</label>
+                            <select name="heading_font" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="Arial">Arial</option>
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Georgia">Georgia</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Body Font</label>
+                            <select name="body_font" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="Arial">Arial</option>
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Georgia">Georgia</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {% if user.subscription.level == 'premium' %}
+                <!-- Custom CSS (Premium Feature) -->
+                <div class="bg-white shadow-sm rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Custom CSS</h3>
+                    <div>
+                        {{ form.custom_css }}
+                        {% if form.custom_css.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.custom_css.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Save Button -->
+                <div class="flex justify-end">
+                    <button type="submit"
+                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="lg:col-span-2">
+            <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                <div class="p-4 bg-gray-50 border-b flex items-center justify-between">
+                    <h3 class="text-lg font-medium text-gray-900">Live Preview</h3>
+                    <div class="flex items-center space-x-4">
+                        <button onclick="setPreviewSize('mobile')" 
+                                class="text-sm text-gray-600 hover:text-gray-900 focus:outline-none">
+                            Mobile
+                        </button>
+                        <button onclick="setPreviewSize('tablet')" 
+                                class="text-sm text-gray-600 hover:text-gray-900 focus:outline-none">
+                            Tablet
+                        </button>
+                        <button onclick="setPreviewSize('desktop')" 
+                                class="text-sm text-gray-600 hover:text-gray-900 focus:outline-none">
+                            Desktop
+                        </button>
+                    </div>
+                </div>
+                <div id="preview-container" class="w-full transition-all duration-300 mx-auto" style="max-height: 800px; overflow-y: auto;">
+                    <div id="preview-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function setPreviewSize(size) {
+    const container = document.getElementById('preview-container');
+    switch(size) {
+        case 'mobile':
+            container.style.maxWidth = '375px';
+            break;
+        case 'tablet':
+            container.style.maxWidth = '768px';
+            break;
+        case 'desktop':
+            container.style.maxWidth = '100%';
+            break;
+    }
+}
+
+function previewChanges() {
+    const form = document.getElementById('customizeForm');
+    const formData = new FormData(form);
+
+    const colors = {
+        primary: formData.get('primary_color'),
+        secondary: formData.get('secondary_color'),
+        background: formData.get('background_color')
+    };
+
+    const fonts = {
+        heading: formData.get('heading_font'),
+        body: formData.get('body_font')
+    };
+
+    const customCSS = formData.get('custom_css');
+
+    const previewContent = document.getElementById('preview-content');
+
+    // Dynamically set CSS variables
+    previewContent.style.setProperty('--primary-color', colors.primary);
+    previewContent.style.setProperty('--secondary-color', colors.secondary);
+    previewContent.style.setProperty('--background-color', colors.background);
+    previewContent.style.setProperty('--heading-font', `${fonts.heading}, sans-serif`);
+    previewContent.style.setProperty('--body-font', `${fonts.body}, sans-serif`);
+
+    // Apply custom CSS by injecting a <style> tag
+    let customStyleTag = document.getElementById('custom-preview-styles');
+    if (customStyleTag) {
+        customStyleTag.remove();
+    }
+    if (customCSS) {
+        customStyleTag = document.createElement('style');
+        customStyleTag.id = 'custom-preview-styles';
+        customStyleTag.textContent = customCSS;
+        previewContent.appendChild(customStyleTag);
+    }
+}
+
+
+
+// Update preview when form inputs change
+document.getElementById('customizeForm').addEventListener('input', function(e) {
+    if (e.target.type === 'color' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+        previewChanges();
+    }
+});
+
+function loadPreview() {
+    fetch('{% url "preview_menu" published_menu.id %}')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const previewContent = document.getElementById('preview-content');
+            previewContent.innerHTML = data.preview_html;
+
+            // Set CSS variables for the preview based on customization
+            previewChanges();
+        })
+        .catch(error => {
+            console.error('Error loading preview:', error);
+            document.getElementById('preview-content').innerHTML = `
+                <div class="text-red-500">Failed to load preview: ${error.message}</div>
+            `;
+        });
+}
+
+
+document.addEventListener('DOMContentLoaded', loadPreview);
+
+document.getElementById('customizeForm').addEventListener('input', function (e) {
+    if (e.target.type === 'color' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+        previewChanges();
+    }
+});
+
+</script>
+{% endblock %}

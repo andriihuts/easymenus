@@ -1,0 +1,477 @@
+{# myapp/templates/myapp/publish/preview.html #}
+{% extends "myapp/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Preview Template: {{ template.name }}</h1>
+                <p class="mt-2 text-gray-600">See how your menu will look with this template</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                {% if menu %}
+                    <button id="useTemplateBtn"
+                            data-href="{% url 'publish_menu' template.id %}?menu_id={{ menu.id }}"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Use This Template
+                    </button>
+                {% endif %}
+                <a href="{% url 'publish_dashboard' %}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Back to Templates
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 {% if show_customization %}lg:grid-cols-3{% endif %} gap-8">
+        {% if show_customization %}
+        <!-- Customization Panel (Only shown for basic/premium users) -->
+        <div class="lg:col-span-1 space-y-6">
+            <form id="customizeForm" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Color Scheme -->
+                <div class="bg-white shadow-sm rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Color Scheme</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Primary Color</label>
+                            <input type="color" 
+                                   name="primary_color" 
+                                   value="#000000"
+                                   class="mt-1 block w-full h-10 p-1 rounded-md border-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Secondary Color</label>
+                            <input type="color" 
+                                   name="secondary_color" 
+                                   value="#666666"
+                                   class="mt-1 block w-full h-10 p-1 rounded-md border-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Background Color</label>
+                            <input type="color" 
+                                   name="background_color" 
+                                   value="#ffffff"
+                                   class="mt-1 block w-full h-10 p-1 rounded-md border-gray-300">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography -->
+                <div class="bg-white shadow-sm rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Typography</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Heading Font</label>
+                            <select name="heading_font" class="mt-1 block w-full rounded-md border-gray-300">
+                                <option value="Arial">Arial</option>
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Georgia">Georgia</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Body Font</label>
+                            <select name="body_font" class="mt-1 block w-full rounded-md border-gray-300">
+                                <option value="Arial">Arial</option>
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Georgia">Georgia</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {% if subscription_level == 'premium' %}
+                <!-- Custom CSS (Premium Only) -->
+                <div class="bg-white shadow-sm rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Custom CSS</h3>
+                    <textarea name="custom_css" 
+                              rows="10" 
+                              class="mt-1 block w-full rounded-md border-gray-300 font-mono text-sm"
+                              placeholder="/* Add your custom CSS here */"></textarea>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Preview Section -->
+        <div class="{% if show_customization %}lg:col-span-2{% endif %}">
+            <!-- Menu Selection -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                <form method="post" class="flex items-end space-x-4">
+                    {% csrf_token %}
+                    <div class="flex-grow">
+                        <label for="menu_id" class="block text-sm font-medium text-gray-700">Select Menu to Preview</label>
+                        <select id="menu_id" name="menu_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            <option value="">Choose a menu...</option>
+                            {% for available_menu in available_menus %}
+                                <option value="{{ available_menu.id }}" {% if menu.id == available_menu.id %}selected{% endif %}>
+                                    {{ available_menu.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" 
+                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Update Preview
+                    </button>
+                </form>
+            </div>
+
+            <!-- Preview Frame -->
+            <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div class="p-4 bg-gray-50 border-b flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="setPreviewSize('mobile')" class="text-sm text-gray-600 hover:text-gray-900 focus:outline-none">Mobile</button>
+                        <button onclick="setPreviewSize('tablet')" class="text-sm text-gray-600 hover:text-gray-900 focus:outline-none">Tablet</button>
+                        <button onclick="setPreviewSize('desktop')" class="text-sm text-gray-600 hover:text-gray-900 focus:outline-none">Desktop</button>
+                    </div>
+                    <button onclick="toggleFullscreen()" class="text-sm text-gray-600 hover:text-gray-900 focus:outline-none">Toggle Fullscreen</button>
+                </div>
+                
+                <div id="preview-container" class="w-full transition-all duration-300 mx-auto bg-white">
+                    <iframe id="preview-frame" class="w-full h-[800px] border-0" title="Template Preview"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Hidden div containing the rendered content #}
+<div id="rendered-content" style="display: none;">
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ menu.name }}</title>
+        
+        <!-- Base styles -->
+        <style>
+            :root {
+                --primary-color: {{ colors.primary|default:'#000000' }};
+                --secondary-color: {{ colors.secondary|default:'#666666' }};
+                --background-color: {{ colors.background|default:'#ffffff' }};
+                --heading-font: {{ fonts.heading|default:'Arial' }}, sans-serif;
+                --body-font: {{ fonts.body|default:'Arial' }}, sans-serif;
+            }
+
+            /* Template CSS */
+            {{ template.css_template|safe }}
+
+            /* Custom CSS */
+            {% if published_menu.custom_css %}
+                {{ published_menu.custom_css|safe }}
+            {% endif %}
+        </style>
+    </head>
+    <body>
+        <div class="menu-container">
+            <header class="menu-header">
+                <h1>{{ menu.name }}</h1>
+                {% if menu.description %}
+                    <p class="menu-description">{{ menu.description }}</p>
+                {% endif %}
+            </header>
+
+            <main class="menu-content">
+                {% for category in menu.categories.all %}
+                    <section class="menu-section">
+                        <div class="category-header">
+                            <h2>{{ category.name }}</h2>
+                            {% if category.name_secondary %}
+                                <p class="category-secondary-name">{{ category.name_secondary }}</p>
+                            {% endif %}
+                        </div>
+
+                        {% if category.images.all %}
+                            <div class="category-images">
+                                {% for image in category.images.all %}
+                                    <img src="{{ image.get_cloudinary_url }}" alt="{{ category.name }}">
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="menu-items">
+                            {% for item in category.menuitem_set.all %}
+                                <article class="menu-item">
+                                    <div class="item-content">
+                                        <h3>{{ item.title }}</h3>
+                                        {% if item.title_secondary %}
+                                            <p class="item-secondary-title">{{ item.title_secondary }}</p>
+                                        {% endif %}
+                                        
+                                        <p class="item-description">{{ item.description }}</p>
+                                        {% if item.description_secondary %}
+                                            <p class="item-secondary-description">{{ item.description_secondary }}</p>
+                                        {% endif %}
+
+                                        {% if item.cost %}
+                                            <p class="item-price">${{ item.cost }}</p>
+                                        {% endif %}
+                                    </div>
+
+                                    {% if item.images.all %}
+                                        <div class="item-images">
+                                            {% for image in item.images.all %}
+                                                <img src="{{ image.get_cloudinary_url }}" alt="{{ item.title }}">
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endfor %}
+            </main>
+
+            <footer class="menu-footer">
+                {% if menu %}
+                    <p>© {% now "Y" %} {{ user.business_name|default:menu.name }}. All rights reserved.</p>
+                {% else %}
+                    <p>© {% now "Y" %} {{ user.business_name|default:default_name }}. All rights reserved.</p>
+                {% endif %}
+            </footer>
+        </div>
+
+        {% if template.js_template %}
+            <script>
+                {{ template.js_template|safe }}
+            </script>
+        {% endif %}
+    </body>
+    </html>
+</div>
+
+{% block extra_js %}
+<script>
+// Initialize preview content
+document.addEventListener('DOMContentLoaded', function() {
+    const frame = document.getElementById('preview-frame');
+    const content = document.getElementById('rendered-content').innerHTML;
+    
+    // Debug logs
+    console.log('Frame element:', frame);
+    console.log('Content length:', content.length);
+    
+    frame.addEventListener('load', function() {
+        console.log('Frame loaded');
+        const doc = frame.contentDocument;
+        if (doc) {
+            console.log('Frame document structure:', doc.documentElement.innerHTML);
+        }
+    });
+    
+    frame.srcdoc = content;
+});
+// Add to the JavaScript in preview.html
+function updatePreview() {
+    const frame = document.getElementById('preview-frame');
+    if (!frame || !frame.contentDocument) {
+        console.log('Frame or contentDocument not available');
+        return;
+    }
+
+    // Create or get the style element
+    let styleElement = frame.contentDocument.getElementById('custom-styles');
+    if (!styleElement) {
+        styleElement = frame.contentDocument.createElement('style');
+        styleElement.id = 'custom-styles';
+        frame.contentDocument.head.appendChild(styleElement);
+    }
+
+    // Get current customization values
+    const primaryColor = document.querySelector('[name="primary_color"]')?.value || '#000000';
+    const secondaryColor = document.querySelector('[name="secondary_color"]')?.value || '#666666';
+    const backgroundColor = document.querySelector('[name="background_color"]')?.value || '#ffffff';
+    const headingFont = document.querySelector('[name="heading_font"]')?.value || 'Arial';
+    const bodyFont = document.querySelector('[name="body_font"]')?.value || 'Arial';
+    const customCSS = document.querySelector('[name="custom_css"]')?.value || '';
+
+    // Build CSS string
+    const css = `
+        :root {
+            --primary-color: ${primaryColor};
+            --secondary-color: ${secondaryColor};
+            --background-color: ${backgroundColor};
+            --heading-font: ${headingFont}, sans-serif;
+            --body-font: ${bodyFont}, sans-serif;
+        }
+        ${customCSS}
+    `;
+
+    // Update styles
+    styleElement.textContent = css;
+}
+
+// Add event listeners for customization controls
+document.addEventListener('DOMContentLoaded', function() {
+    // First load the preview
+    const frame = document.getElementById('preview-frame');
+    const content = document.getElementById('rendered-content').innerHTML;
+    frame.srcdoc = content;
+
+    // Add event listeners to all customization inputs
+    const customizationInputs = document.querySelectorAll('input[type="color"], select, textarea');
+    customizationInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            // Use debounce to avoid too frequent updates
+            clearTimeout(input.timeout);
+            input.timeout = setTimeout(updatePreview, 100);
+        });
+    });
+
+    // Handle "Use Template" button click
+    const useTemplateBtn = document.getElementById('useTemplateBtn');
+    if (useTemplateBtn) {
+        useTemplateBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Get current values
+            const primaryColor = document.querySelector('[name="primary_color"]').value;
+            const secondaryColor = document.querySelector('[name="secondary_color"]').value;
+            const backgroundColor = document.querySelector('[name="background_color"]').value;
+            const headingFont = document.querySelector('[name="heading_font"]').value;
+            const bodyFont = document.querySelector('[name="body_font"]').value;
+            
+            // Create customizations object
+            const customizations = {
+                colors: {
+                    primary: primaryColor,
+                    secondary: secondaryColor,
+                    background: backgroundColor
+                },
+                fonts: {
+                    heading: headingFont,
+                    body: bodyFont
+                }
+            };
+
+            // Add custom CSS if it exists
+            const customCssInput = document.querySelector('[name="custom_css"]');
+            if (customCssInput) {
+                customizations.custom_css = customCssInput.value;
+            }
+
+            // Log before saving
+            console.log('About to save customizations:', customizations);
+
+            // Save to sessionStorage
+            sessionStorage.setItem('template_customizations', JSON.stringify(customizations));
+            
+            // Verify it was saved
+            const savedCustomizations = sessionStorage.getItem('template_customizations');
+            console.log('Verified saved customizations:', savedCustomizations);
+            
+            // Add customizations to URL as query parameters
+            const url = new URL(useTemplateBtn.dataset.href, window.location.origin);
+            url.searchParams.append('customizations', JSON.stringify(customizations));
+            
+            // Redirect with customizations in URL
+            window.location.href = url.toString();
+        });
+    }
+
+    // Wait for frame to load before applying initial styles
+    frame.addEventListener('load', function() {
+        updatePreview();
+    });
+});
+
+// Update preview when customizations change
+function updatePreview() {
+    const frame = document.getElementById('preview-frame');
+    if (!frame.contentDocument) return;
+
+    const primaryColor = document.querySelector('[name="primary_color"]').value;
+    const secondaryColor = document.querySelector('[name="secondary_color"]').value;
+    const backgroundColor = document.querySelector('[name="background_color"]').value;
+    const headingFont = document.querySelector('[name="heading_font"]').value;
+    const bodyFont = document.querySelector('[name="body_font"]').value;
+    const customCss = document.querySelector('[name="custom_css"]')?.value || '';
+
+    const customStyles = document.createElement('style');
+    customStyles.id = 'custom-styles';
+    customStyles.textContent = `
+        :root {
+            --primary-color: ${primaryColor};
+            --secondary-color: ${secondaryColor};
+            --background-color: ${backgroundColor};
+            --heading-font: ${headingFont}, sans-serif;
+            --body-font: ${bodyFont}, sans-serif;
+        }
+        ${customCss}
+    `;
+    
+    const existingStyles = frame.contentDocument.getElementById('custom-styles');
+    if (existingStyles) {
+        existingStyles.replaceWith(customStyles);
+    } else {
+        frame.contentDocument.head.appendChild(customStyles);
+    }
+
+    // Log the current customization state (for debugging)
+    console.log('Preview updated with:', {
+        primaryColor,
+        secondaryColor,
+        backgroundColor,
+        headingFont,
+        bodyFont,
+        customCss
+    });
+}
+
+function setPreviewSize(size) {
+    const container = document.getElementById('preview-container');
+    switch(size) {
+        case 'mobile': container.style.maxWidth = '375px'; break;
+        case 'tablet': container.style.maxWidth = '768px'; break;
+        case 'desktop': container.style.maxWidth = '100%'; break;
+    }
+}
+
+function toggleFullscreen() {
+    const frame = document.getElementById('preview-frame');
+    if (frame.requestFullscreen) frame.requestFullscreen();
+    else if (frame.mozRequestFullScreen) frame.mozRequestFullScreen();
+    else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+    else if (frame.msRequestFullscreen) frame.msRequestFullscreen();
+}
+
+// Update preview when customizations change
+function updatePreview() {
+    const frame = document.getElementById('preview-frame');
+    if (!frame.contentDocument) return;
+
+    const customStyles = document.createElement('style');
+    customStyles.textContent = `
+        :root {
+            --primary-color: ${document.querySelector('[name="primary_color"]').value};
+            --secondary-color: ${document.querySelector('[name="secondary_color"]').value};
+            --background-color: ${document.querySelector('[name="background_color"]').value};
+            --heading-font: ${document.querySelector('[name="heading_font"]').value}, sans-serif;
+            --body-font: ${document.querySelector('[name="body_font"]').value}, sans-serif;
+        }
+        {% if subscription_level == 'premium' %}
+        ${document.querySelector('[name="custom_css"]').value}
+        {% endif %}
+    `;
+    
+    const existingStyles = frame.contentDocument.getElementById('custom-styles');
+    if (existingStyles) {
+        existingStyles.replaceWith(customStyles);
+    } else {
+        frame.contentDocument.head.appendChild(customStyles);
+    }
+}
+
+
+</script>
+{% endblock %}
+{% endblock %}

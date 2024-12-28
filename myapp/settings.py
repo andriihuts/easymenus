@@ -1,0 +1,1 @@
+CLOUDINARY_URL_TRANSFORMATION = "fl_force_strip,fl_progressive,q_auto:good"

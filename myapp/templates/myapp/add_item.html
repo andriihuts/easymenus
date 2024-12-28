@@ -1,0 +1,18 @@
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h3 class="text-lg font-bold mt-4">Select Images from Media Library</h3>
+    <div class="grid grid-cols-4 gap-4">
+        {% for image in form.media_library %}
+        <label class="block">
+            <input type="checkbox" name="media_library" value="{{ image.pk }}">
+            <img src="{{ image.get_cloudinary_url }}" alt="Media" class="w-full h-32 object-cover">
+        </label>
+        {% endfor %}
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Add Item</button>
+    </div>
+</form>

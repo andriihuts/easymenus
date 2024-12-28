@@ -1,0 +1,202 @@
+<!-- templates/myapp/menu_modals.html -->
+<!-- Add Category Modal -->
+<div id="addCategoryModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Add New Category</h3>
+        <form id="addCategoryForm" method="post" 
+              action="{% if selected_menu %}{% url 'add_category_to_menu' selected_menu.id %}{% else %}#{% endif %}">
+            {% csrf_token %}
+            {% if selected_menu %}
+            <input type="hidden" name="menu_id" value="{{ selected_menu.id }}">
+            {% endif %}
+            <div class="space-y-4">
+                <!-- Category Name -->
+                <div>
+                    <label for="category-name" class="block text-sm font-medium text-gray-700">Category Name</label>
+                    <input id="category-name" type="text" name="name" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <!-- Secondary Name -->
+                <div>
+                    <label for="category-secondary-name" class="block text-sm font-medium text-gray-700">
+                        Secondary Name (Optional)
+                    </label>
+                    <input id="category-secondary-name" type="text" name="name_secondary"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label for="category-order" class="block text-sm font-medium text-gray-700">Order (Optional)</label>
+                    <input id="category-order" type="number" name="order" 
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+            </div>
+            <!-- Submit and Cancel Buttons -->
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" onclick="hideModal('addCategoryModal')"
+                        class="px-4 py-2 border rounded hover:bg-gray-200">Cancel</button>
+                <button type="submit"
+                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Add Category
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- Add Item Modal -->
+<div id="addItemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Add Menu Item</h3>
+        <form id="addItemForm" method="post" 
+      action="{% if selected_menu %}{% url 'add_item_to_menu' selected_menu.id %}{% endif %}">
+            {% csrf_token %}
+            <input type="hidden" name="menu" value="{{ selected_menu.id }}"> {# Name the input 'menu', not 'menu_id' #}
+            <input type="hidden" name="category_id" value="">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Title</label>
+                    <input type="text" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Secondary Title (Optional)</label>
+                    <input type="text" name="title_secondary" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea name="description" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Secondary Description (Optional)</label>
+                    <textarea name="description_secondary" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Cost</label>
+                    <input type="number" name="cost" step="0.01" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" onclick="hideModal('addItemModal')" class="px-4 py-2 border rounded">Cancel</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add Item</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div id="editCategoryModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Edit Category</h3>
+        <form id="editCategoryForm" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="category_id">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Secondary Name</label>
+                    <input type="text" name="name_secondary" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" onclick="hideModal('editCategoryModal')" class="px-4 py-2 border rounded">Cancel</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Item Modal -->
+<div id="editItemModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Edit Item</h3>
+        <form id="editItemForm" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="item_id">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Title</label>
+                    <input type="text" name="title" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Secondary Title</label>
+                    <input type="text" name="title_secondary" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea name="description" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Secondary Description</label>
+                    <textarea name="description_secondary" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Cost</label>
+                    <input type="number" name="cost" step="0.01" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" onclick="hideModal('editItemModal')" class="px-4 py-2 border rounded">Cancel</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="renameMenuModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Rename Menu</h3>
+        <form id="renameMenuForm" method="post" action="">
+            {% csrf_token %}
+            <input type="hidden" name="menu_id" value="">
+            <div class="space-y-4">
+                <div>
+                    <label for="menu-name" class="block text-sm font-medium text-gray-700">New Menu Name</label>
+                    <input id="menu-name" type="text" name="name" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" onclick="hideModal('renameMenuModal')" class="px-4 py-2 border rounded hover:bg-gray-200">
+                    Cancel
+                </button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Rename
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add this modal to menu_modals.html -->
+<div id="createMenuModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4">Create New Menu</h3>
+        <form method="post" action="{% url 'all_menus' %}">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label for="menu-name" class="block text-sm font-medium text-gray-700">Menu Name</label>
+                    <input id="menu-name" 
+                           type="text" 
+                           name="menu_name" 
+                           required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" 
+                        onclick="hideModal('createMenuModal')" 
+                        class="px-4 py-2 border rounded hover:bg-gray-200">
+                    Cancel
+                </button>
+                <button type="submit" 
+                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Create Menu
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

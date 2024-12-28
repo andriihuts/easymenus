@@ -1,0 +1,27 @@
+{% extends "myapp/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-4">Select Template and Menu</h1>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label for="menu_id" class="block text-sm font-medium text-gray-700">Select a Menu</label>
+            <select id="menu_id" name="menu_id" class="mt-1 block w-full rounded-md border-gray-300">
+                {% for menu in menus %}
+                <option value="{{ menu.id }}">{{ menu.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="template_id" class="block text-sm font-medium text-gray-700">Select a Template</label>
+            <select id="template_id" name="template_id" class="mt-1 block w-full rounded-md border-gray-300">
+                {% for template in templates %}
+                <option value="{{ template.id }}">{{ template.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">Proceed</button>
+    </form>
+</div>
+{% endblock %}

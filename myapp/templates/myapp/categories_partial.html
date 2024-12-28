@@ -1,0 +1,22 @@
+<ul id="categoryList">
+    {% for category in categories %}
+    <li class="border-b py-2 flex justify-between items-center">
+        <span>
+            <strong>{{ category.name }}</strong>
+            {% if category.name_secondary %}
+                <span class="text-gray-600">({{ category.name_secondary }})</span>
+            {% endif %}
+        </span>
+        {% if category.deletable %}
+        <form method="post" action="{% url 'delete_category' category.id %}">
+            {% csrf_token %}
+            <button type="submit" class="text-red-500 hover:text-red-700 font-bold">
+                Delete
+            </button>
+        </form>
+        {% else %}
+        <span class="text-gray-500 text-sm">Cannot delete</span>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,9 @@
+{
+    "name": "Simple Modern",
+    "description": "A simple and modern menu template",
+    "version": "1.0",
+    "industry_type": "restaurant",
+    "style": "modern",
+    "is_premium": false,
+    "author": "EasyMenus"
+}

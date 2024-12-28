@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} - Easy Menus{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% endblock %}
+</head>
+<body class="min-h-screen bg-white">
+   
+
+    <!-- Main Content -->
+
+        {% block content %}
+        {% endblock %}
+
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        // Mobile menu toggle
+     
+    </script>
+</body>
+</html>

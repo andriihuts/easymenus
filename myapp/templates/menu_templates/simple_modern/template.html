@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ menu.name }}</title>
+</head>
+<body>
+    <header>
+        <h1>{{ menu.name }}</h1>
+        {% if menu.description %}
+            <p class="tagline">{{ menu.description }}</p>
+        {% endif %}
+    </header>
+
+    <main>
+        {% for category in menu.categories.all %}
+        <section class="menu-section">
+            <h2>{{ category.name }}</h2>
+            {% if category.name_secondary %}
+                <p class="category-secondary">{{ category.name_secondary }}</p>
+            {% endif %}
+
+            {% if category.images.all %}
+            <div class="category-images">
+                {% for image in category.images.all %}
+                    <img src="{{ image.get_cloudinary_url }}" alt="{{ category.name }} image" class="category-image">
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <ul class="menu-items">
+                {% for item in category.menuitem_set.all %}
+                <li class="menu-item">
+                    <div class="item-content">
+                        <h3>{{ item.title }}</h3>
+                        {% if item.title_secondary %}
+                            <p class="item-secondary-title">{{ item.title_secondary }}</p>
+                        {% endif %}
+                        <p class="item-description">{{ item.description }}</p>
+                        {% if item.description_secondary %}
+                            <p class="item-secondary-description">{{ item.description_secondary }}</p>
+                        {% endif %}
+                        {% if item.cost %}
+                            <span class="price">${{ item.cost }}</span>
+                        {% endif %}
+                    </div>
+                    {% if item.images.all %}
+                    <div class="item-images">
+                        {% for image in item.images.all %}
+                            <img src="{{ image.get_cloudinary_url }}" alt="{{ item.title }} image" class="item-image">
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endfor %}
+    </main>
+
+    <footer>
+        <p>&copy; {% now "Y" %} {{ menu.user.business_name|default:menu.name }}. All rights reserved.</p>
+    </footer>
+</body>
+</html>

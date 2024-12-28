@@ -1,0 +1,20 @@
+{% extends published_menu.template.base_template %}
+
+{% block custom_styles %}
+    <style>
+        :root {
+            --primary-color: {{ colors.primary|default:'#000000' }};
+            --secondary-color: {{ colors.secondary|default:'#666666' }};
+            --background-color: {{ colors.background|default:'#ffffff' }};
+            --heading-font: {{ fonts.heading|default:'Arial' }}, sans-serif;
+            --body-font: {{ fonts.body|default:'Arial' }}, sans-serif;
+        }
+        
+        {{ custom_css|safe }}
+    </style>
+{% endblock %}
+
+{% block menu_content %}
+    <!-- Render the menu content using the template and customizations -->
+    {{ published_menu.rendered_content|safe }}
+{% endblock %}

@@ -1,0 +1,98 @@
+Restaurant schema
+
+
+{
+  "name": "restaurant_menu",
+  "strict": true,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "menu_categories": {
+        "type": "array",
+        "description": "An array of categories for the menu.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "category_name": {
+              "type": "string",
+              "description": "The name of the category."
+            },
+            "menu_items": {
+              "type": "array",
+              "description": "An array of menu items for this category.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "The name of the menu item."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "A brief description of the menu item."
+                  },
+                  "cost": {
+                    "type": "number",
+                    "description": "The price of the menu item."
+                  },
+                  "options": {
+                    "type": "array",
+                    "description": "Optional extras or variations that can accompany the menu item.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "option_title": {
+                          "type": "string",
+                          "description": "The name of the option."
+                        },
+                        "pricing": {
+                          "type": "object",
+                          "properties": {
+                            "additional_cost": {
+                              "type": "number",
+                              "description": "The additional cost for the option, if applicable."
+                            },
+                            "is_free": {
+                              "type": "boolean",
+                              "description": "Indicates whether the option is free."
+                            }
+                          },
+                          "required": [
+                            "additional_cost",
+                            "is_free"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "option_title",
+                        "pricing"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "title",
+                  "description",
+                  "cost",
+                  "options"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "category_name",
+            "menu_items"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "menu_categories"
+    ],
+    "additionalProperties": false
+  }
+}

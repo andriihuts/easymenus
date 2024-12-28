@@ -1,0 +1,100 @@
+{# templates/myapp/published_menu.html #}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ menu.name }}</title>
+    
+    <!-- Base styles -->
+    <style>
+        :root {
+            --primary-color: {{ colors.primary|default:'#000000' }};
+            --secondary-color: {{ colors.secondary|default:'#666666' }};
+            --background-color: {{ colors.background|default:'#ffffff' }};
+            --heading-font: {{ fonts.heading|default:'Arial' }}, sans-serif;
+            --body-font: {{ fonts.body|default:'Arial' }}, sans-serif;
+        }
+
+        /* Base Template CSS */
+        {{ css_template|safe }}
+
+        /* Custom CSS */
+        {% if custom_css %}
+            {{ custom_css|safe }}
+        {% endif %}
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <header class="menu-header">
+            <h1>{{ menu.name }}</h1>
+            {% if menu.description %}
+                <p class="menu-description">{{ menu.description }}</p>
+            {% endif %}
+        </header>
+
+        <main class="menu-content">
+            {% for category in categories %}
+                <section class="menu-section">
+                    <div class="category-header">
+                        <h2>{{ category.name }}</h2>
+                        {% if category.name_secondary %}
+                            <p class="category-secondary-name">{{ category.name_secondary }}</p>
+                        {% endif %}
+                    </div>
+
+                    {% if category.images.all %}
+                        <div class="category-images">
+                            {% for image in category.images.all %}
+                                <img src="{{ image.get_cloudinary_url }}" alt="{{ category.name }}">
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="menu-items">
+                        {% for item in category.menuitem_set.all %}
+                            <article class="menu-item">
+                                <div class="item-content">
+                                    <h3>{{ item.title }}</h3>
+                                    {% if item.title_secondary %}
+                                        <p class="item-secondary-title">{{ item.title_secondary }}</p>
+                                    {% endif %}
+                                    
+                                    <p class="item-description">{{ item.description }}</p>
+                                    {% if item.description_secondary %}
+                                        <p class="item-secondary-description">{{ item.description_secondary }}</p>
+                                    {% endif %}
+
+                                    {% if item.cost %}
+                                        <p class="item-price">${{ item.cost }}</p>
+                                    {% endif %}
+                                </div>
+
+                                {% if item.images.all %}
+                                    <div class="item-images">
+                                        {% for image in item.images.all %}
+                                            <img src="{{ image.get_cloudinary_url }}" alt="{{ item.title }}">
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endfor %}
+        </main>
+
+        <footer class="menu-footer">
+            <p>© {% now "Y" %} {{ menu.user.business_name|default:menu.name }}. All rights reserved.</p>
+        </footer>
+    </div>
+
+    {% if js_template %}
+        <script>
+            {{ js_template|safe }}
+        </script>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,174 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Menu Manager{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    {% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% endblock %}
+</head>
+<body class="min-h-screen bg-gray-50">
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <!-- Logo -->
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-xl font-bold text-gray-800">MenuManager</span>
+                    </div>
+
+                    <!-- Main Navigation -->
+                    {% if user.is_authenticated %}
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="{% url 'dashboard' %}" 
+                           class="{% if request.resolver_match.url_name == 'dashboard' %}border-blue-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %} 
+                                  inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="{% url 'scan_page' %}" 
+                        class="{% if request.resolver_match.url_name == 'scan_page' %}border-blue-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %} 
+                               inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                         Scan
+                     </a>
+                        <a href="{% url 'all_menus' %}"
+                           class="{% if request.resolver_match.url_name == 'all_menus' %}border-blue-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %}
+                                  inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Menus
+                        </a>
+                        
+                        <a href="{% url 'publish_dashboard' %}"
+                           class="{% if 'publish' in request.path %}border-blue-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %}
+                                  inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Publish
+                        </a>
+                        
+                        <a href="{% url 'media_library' %}"
+                           class="{% if request.resolver_match.url_name == 'media_library' %}border-blue-500 text-gray-900{% else %}border-transparent text-gray-500{% endif %}
+                                  inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Media Library
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Right side menu -->
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    {% if user.is_authenticated %}
+                        <div class="ml-3 relative">
+                            <div class="flex items-center space-x-4">
+                                <span class="text-sm text-gray-500">{{ user.email }}</span>
+                                <a href="{% url 'logout' %}" 
+                                   class="text-gray-500 hover:text-gray-700 text-sm font-medium">
+                                    Logout
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-500 hover:text-gray-700 text-sm font-medium">Login</a>
+                        <a href="{% url 'signup' %}" class="ml-4 text-gray-500 hover:text-gray-700 text-sm font-medium">Sign Up</a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="flex items-center sm:hidden">
+                    <button type="button" 
+                            class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+                            aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Icon for menu -->
+                        <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="sm:hidden mobile-menu hidden">
+            <div class="pt-2 pb-3 space-y-1">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" 
+                       class="block pl-3 pr-4 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                        Dashboard
+                    </a>
+                    <a href="{% url 'all_menus' %}" 
+                       class="block pl-3 pr-4 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                        Menus
+                    </a>
+                    <a href="{% url 'publish_dashboard' %}" 
+                       class="block pl-3 pr-4 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                        Publish
+                    </a>
+                    <a href="{% url 'media_library' %}" 
+                       class="block pl-3 pr-4 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                        Media Library
+                    </a>
+                    <a href="{% url 'logout' %}" 
+                       class="block pl-3 pr-4 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" 
+                       class="block pl-3 pr-4 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                        Login
+                    </a>
+                    <a href="{% url 'signup' %}" 
+                       class="block pl-3 pr-4 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                        Sign Up
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        {% for message in messages %}
+        <div class="rounded-md {% if message.tags == 'error' %}bg-red-50{% else %}bg-blue-50{% endif %} p-4 mb-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    {% if message.tags == 'error' %}
+                    <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    {% else %}
+                    <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    {% endif %}
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium {% if message.tags == 'error' %}text-red-800{% else %}text-blue-800{% endif %}">
+                        {{ message }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-button').addEventListener('click', function() {
+            document.querySelector('.mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

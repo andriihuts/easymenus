@@ -1,0 +1,182 @@
+{% extends "myapp/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
+
+    <!-- Processing Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Processings</h3>
+            <p class="mt-2 text-3xl font-bold text-blue-600">{{ total_processings }}</p>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">This Month</h3>
+            <p class="mt-2 text-3xl font-bold text-green-600">{{ processings_this_month }}</p>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Monthly Limit</h3>
+            <p class="mt-2 text-3xl font-bold text-purple-600">{{ processing_limit }}</p>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Remaining</h3>
+            <p class="mt-2 text-3xl font-bold {% if processings_remaining != 'Unlimited' and processings_remaining < 3 %}text-red-600{% else %}text-indigo-600{% endif %}">
+                {{ processings_remaining }}
+            </p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Business Profile Section -->
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="border-b border-gray-200 px-6 py-4">
+                <h2 class="text-xl font-semibold text-gray-800">Business Profile</h2>
+            </div>
+            
+            <form method="post" class="p-6 space-y-6">
+                {% csrf_token %}
+                
+                <!-- Business Information -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-gray-700">Business Information</h3>
+                    <div class="grid gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{{ profile_form.business_name.label }}</label>
+                            {{ profile_form.business_name }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{{ profile_form.business_description.label }}</label>
+                            {{ profile_form.business_description }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Address -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-gray-700">Address</h3>
+                    <div class="grid gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{{ profile_form.address_line1.label }}</label>
+                            {{ profile_form.address_line1 }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{{ profile_form.address_line2.label }}</label>
+                            {{ profile_form.address_line2 }}
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">{{ profile_form.city.label }}</label>
+                                {{ profile_form.city }}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">{{ profile_form.state_province.label }}</label>
+                                {{ profile_form.state_province }}
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">{{ profile_form.postal_code.label }}</label>
+                                {{ profile_form.postal_code }}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">{{ profile_form.country.label }}</label>
+                                {{ profile_form.country }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Online Presence -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-medium text-gray-700">Online Presence</h3>
+                    <div class="grid gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{{ profile_form.website_url.label }}</label>
+                            {{ profile_form.website_url }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">{{ profile_form.facebook_url.label }}</label>
+                            {{ profile_form.facebook_url }}
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">{{ profile_form.instagram_username.label }}</label>
+                                {{ profile_form.instagram_username }}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">{{ profile_form.twitter_username.label }}</label>
+                                {{ profile_form.twitter_username }}
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">{{ profile_form.bluesky_handle.label }}</label>
+                                {{ profile_form.bluesky_handle }}
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">{{ profile_form.threads_username.label }}</label>
+                                {{ profile_form.threads_username }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Update Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Subscription Section -->
+        <div class="bg-white rounded-lg shadow-md">
+            <div class="border-b border-gray-200 px-6 py-4">
+                <h2 class="text-xl font-semibold text-gray-800">Subscription Details</h2>
+            </div>
+            
+            <div class="p-6">
+                <div class="mb-8">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500">Current Level</p>
+                            <p class="mt-1 font-semibold">{{ subscription.level|title }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Billing Cycle</p>
+                            <p class="mt-1 font-semibold">{{ subscription.billing_cycle|title }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Start Date</p>
+                            <p class="mt-1 font-semibold">{{ subscription.start_date|date:"F j, Y" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">End Date</p>
+                            <p class="mt-1 font-semibold">{{ subscription.end_date|date:"F j, Y" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">Status</p>
+                            <p class="mt-1 font-semibold {% if subscription.is_active %}text-green-600{% else %}text-red-600{% endif %}">
+                                {{ subscription.is_active|yesno:"Active,Inactive" }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    {{ sub_form.as_p }}
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                            Update Subscription
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

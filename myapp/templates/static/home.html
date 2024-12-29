@@ -377,7 +377,6 @@
     </div>
 
     <!-- Owners Worldwide Section -->
-
     <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative bg-[url('{% static 'images/homepage/dotted-world-map-gray-color-vector.png' %}')] bg-cover bg-[60%] bg-center bg-no-repeat bg-opacity-10">
         <div class="flex flex-col md:flex-row gap-1 items-stretch py-20">
             <!-- First Column -->
@@ -418,24 +417,317 @@
         </div>
     </div>
 
+    <!-- Flexible Plan Section -->
+    <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative rounded-[80px] bg-gradient-to-b from-[#E6EEFD] to-[#FDFDFD]">
+        <div class="text-center mx-3">
+            <button class="bg-gray-100 text-gray-400 px-6 py-2 rounded-full hover:bg-gray-200 transition duration-300 mt-7 mb-3 font-bold">
+              Upgrade Anytime
+            </button>
+        </div>
 
+        <div class="text-center mx-3">
+            <h2 class="text-5xl font-bold text-black-900 my-4 leading-tight">
+              Simple, Flexible Plans for<br />Every Retaurant
+            </h2>
+
+            <div class="inline-block bg-gray-100 text-gray-400 p-2 rounded-full mt-7 mb-3 font-bold relative">
+                <button class="bg-[#F6522C] text-white px-8 py-2 rounded-full transition duration-300 m-1 font-bold h-[50px]">
+                    MONTHLY
+                </button>
+                <button class="bg-white text-gray-400 px-8 py-2 rounded-full hover:bg-gray-200 transition duration-300 m-1 font-bold h-[50px] relative">
+                    ANNUALY
+                    <span class="block bg-[#3366CC] text-white absolute top-[-20px] right-[20%] px-2 py-1 rounded-lg">16% OFF</span>
+                </button>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-between my-10">
+                <!-- First Div -->
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-3xl font-bold text-gray-800 content-end">
+                  <p>Features</p>
+                </div>
+              
+                <!-- Second Div -->
+                <div class="relative bg-gray-100 p-6 rounded-[36px] flex flex-col md:w-1/4 sm:w-1/2 text-start items-end pt-10 border items-stretch">
+                    <div class="flex-1">
+                        <label class="text-3xl font-bold text-gray-800 leading-loose">Basic</label>
+                        <p class="text-lg font-bold text-gray-600">For businesses just getting started</p>
+                    </div>
+                    <div class="flex-1">
+                        <div class="my-4"><label class="text-5xl font-bold my-10 color-[#211F20]">$12</label><label> / month</label></div>
+                        <button class="bg-white w-full hover:bg-gray-200 border text-gray-400 px-7 py-3 rounded-lg transition duration-300 my-8 sm:mb-0 font-bold h-[50px]">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+              
+                <!-- Third Div -->
+                <div class="relative bg-gray-100 p-6 rounded-[36px] flex flex-col md:w-1/4 sm:w-1/2 text-start pt-10 border bg-gradient-to-tr from-[#FEEEEA] via-[#FAFAFA] to-[#FFFFFF] citems-stretch">
+                    <div class="flex-1">
+                        <label class="text-3xl font-bold text-gray-800 leading-loose">Pro</label>
+                        <p class="text-lg font-bold text-gray-600">For growing establishments</p>
+                        <p class="text-[12px]">+ Custom domain registration free</p>
+                    </div>
+                    <div class="flex-1">
+                        <div class="my-4"><label class="text-5xl font-bold my-10 color-[#211F20]">$35</label><label> / month</label></div>
+                        <button class="bg-[#F6522C] w-full border text-white px-7 py-3 rounded-lg transition duration-300 my-8 sm:mb-0 font-bold h-[50px]">
+                            Get Started
+                        </button>
+                    </div>
+                    <span class="bg-white absolute top-0 right-[20px] px-6 py-2 rounded-full mt-4 mb-3 font-bold border border-[#4A77D2] text-[#4A77D2] flex flex-row items-center">
+                        <img src="{% static 'images/homepage/diamond.png' %}" class="me-2 w-[18px] h-[18px]" /><span class="grow"> Best Plan</span>
+                    </span>
+                </div>
+              
+                <!-- Fourth Div -->
+                <div class="relative bg-gray-100 p-6 rounded-[36px] flex flex-col md:w-1/4 sm:w-1/2 text-start pt-10 border items-between">
+                    <div class="flex-1">
+                        <label class="text-3xl font-bold text-gray-800 leading-loose">Enterprise</label>
+                        <p class="text-lg font-bold text-gray-600">For thriving culinary brands</p>
+                    </div>
+                    <div class="flex-1">
+                        <div class="my-4"><label class="text-5xl font-bold my-10 color-[#211F20]">$350</label><label> / month</label></div>
+                        <button class="bg-white w-full hover:bg-gray-200 border text-gray-400 px-7 py-3 rounded-lg transition duration-300 my-8 sm:mb-0 font-bold h-[50px]">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-between my-0 bg-white rounded-lg">
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="leading-tight">Menu Scans</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="text-center">5 times a month</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="text-center">50 times a month</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="text-center">Unlimited menu scans</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-between my-0 bg-transparent rounded-lg">
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="leading-tight">Edits</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="text-center">Unlimited edits</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="text-center">Unlimited edits</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="text-center">Unlimited edits</p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-between my-0 bg-white rounded-lg">
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="leading-tight">Custom Domain</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="text-center">Only Subdomain</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-between my-0 bg-transparent rounded-lg">
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="leading-tight">Custom colors and typograpy</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto opacity-20">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-between my-0 bg-white rounded-lg">
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="leading-tight">Analytics</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto opacity-20">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-between my-0 bg-transparent rounded-lg">
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="leading-tight">Google business registration</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto opacity-20">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-between my-0 bg-white rounded-lg">
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="leading-tight">Custom tempaltes</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto opacity-20">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-between my-0 bg-transparent rounded-lg">
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="leading-tight">Faster response with assistance</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto opacity-20">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto opacity-20">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 justify-between my-0 bg-white rounded-lg">
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p>Account manager</p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto opacity-20">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                    <p class="text-center">
+                      <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto opacity-20">
+                    </p>
+                </div>
+                <div class="p-4 flex-1 md:w-1/4 sm:w-1/2 text-start items-end text-xl text-gray-800 content-center items-center">
+                  <p class="text-center">
+                    <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-auto">
+                  </p>
+                </div>
+            </div>            
+
+        </div>
       
-    
-    
+    </div>
 
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
+        
+    <!-- Restaurant Achieve Section -->
+    <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row gap-4 items-center">
+            <!-- First Column -->
+            <div class="bg-white p-4 w-full md:w-1/2 flex flex-col items-center sm:items-start justify-center text-start">
+                <button class="bg-gray-100 text-gray-400 px-6 py-2 rounded-full hover:bg-gray-200 transition duration-300 mt-7 mb-3 font-bold">
+                Amplify Results
+                </button>
+                <h2 class="text-[40px] font-bold text-black-900 my-2 leading-tight">
+                Running a Restaurant is<br />Tough, Managing Your<br />Menu Shouldn't be
+                </h2>
+                <p class="text-[20px] leading-tight my-2">We understand the struggles of restaurant owners-outdated menus, time-consuming updates, missed oportunity to connect with custmers. Easy menu fixed all of that</p>
+                <ul class="list-decimal space-y-4 my-4">
+                    <li class="flex items-center">
+                        <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-2">
+                        Quick menu updates with AI assistance.
+                    </li>
+                    <li class="flex items-center">
+                        <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-2">
+                        Professional mobile-friendly menu made easy.
+                    </li>
+                    <li class="flex items-center">
+                        <img src="{% static 'images/homepage/check.png' %}" alt="check" class="w-auto mx-2">
+                        Boost visibility with SEO-optimized designs.
+                    </li>
+                </ul>
+                <button class="bg-[#F6522C] text-white px-8 py-3 rounded-lg transition duration-300 w-[100%] sm:w-[60%] max-w-[300px] my-3 sm:mb-0 font-bold h-[70px]">
+                    MAKE THE SWITCH TODAY.
+                </button>
+            </div>
+            
+            <!-- Second Column (Larger Center Column) -->
+            <div class="bg-white p-4 w-full md:w-1/2 flex justify-center items-center">
+                <img src="{% static 'images/homepage/digitalizes.png' %}" alt="Digitalizes" class="h-full w-auto drop-shadow-lg">
+            </div>
+        </div>
+    </div>
 
-    <br />
-    <br /><br />
+    <!-- QA Section -->
+    <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div class="text-center mx-3">
+            <button class="bg-gray-100 text-gray-400 px-6 py-2 rounded-full hover:bg-gray-200 transition duration-300 mt-7 mb-3 font-bold">
+              Get Better Clarity
+            </button>
+        </div>
+
+        <div class="text-center mx-3">
+            <h2 class="text-5xl font-bold text-black-900 my-4 leading-tight">
+              Got Questions? We've Got Answers.
+            </h2>
+        </div>
+
+        
+    </div>
+    
 
    
 </div>

@@ -4,7 +4,7 @@
 {% load static %} <!-- Add this line -->
 
 {% block content %}
-<div class="relative">
+<div class="relative overflow-hidden">
 
     <nav class="bg-transparent py-4">
         <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,7 +55,7 @@
     <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
           <!-- Left Div -->
-          <div class="text-center md:text-left mx-3">
+          <div class="text-center md:text-start mx-3">
             <button class="bg-gray-100 text-gray-400 px-6 py-2 rounded-full hover:bg-gray-200 transition duration-300 mt-7 mb-3 font-bold">
               Say Goodbye to Outdated Menus
             </button>
@@ -145,7 +145,7 @@
     <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row gap-1 items-center">
             <!-- First Column -->
-            <div class="bg-white p-2 w-full md:w-4/12 flex flex-col items-center sm:items-start justify-center text-left">
+            <div class="bg-white p-2 w-full md:w-4/12 flex flex-col items-center sm:items-start justify-center text-start">
               <button class="bg-gray-100 text-gray-400 px-6 py-2 rounded-full hover:bg-gray-200 transition duration-300 mt-7 mb-3 font-bold">
                 AI-POWERED
               </button>
@@ -164,13 +164,13 @@
             </div>
           
             <!-- Third Column -->
-            <div class="bg-white p-0 w-full md:w-1/4 flex flex-col items-center sm:items-start justify-center text-left">
+            <div class="bg-white p-0 w-full md:w-1/4 flex flex-col items-center sm:items-start justify-center text-start">
               <div class="flex items-start gap-0 my-2">
                 <!-- Image -->
                 <img src="{% static 'images/homepage/effortless.png' %}" alt="Effortless" />
           
                 <!-- Text Content -->
-                <div class="inline-block mt-4 ps-4">
+                <div class="inline-block mt-4 ps-3">
                   <label class="font-bold text-gray-900 text-lg">Effortless<br /> Menu Builder</label>
                   <p class="text-gray-600 text-sm">Add and edit menu items, categories, and images in minutes</p>
                 </div>
@@ -180,7 +180,7 @@
                 <img src="{% static 'images/homepage/mobile-optimized.png' %}" alt="Mobile Optimized" />
           
                 <!-- Text Content -->
-                <div class="inline-block mt-4 ps-4">
+                <div class="inline-block mt-4 ps-3">
                   <label class="font-bold text-gray-900 text-lg">Mobile-Optimized<br /> Websites</label>
                   <p class="text-gray-600 text-sm">Your menu automatically becomes a mobile-friendly website</p>
                 </div>
@@ -190,7 +190,7 @@
                 <img src="{% static 'images/homepage/ai-powered.png' %}" alt="AI Powered" class="h-auto w-auto">
           
                 <!-- Text Content -->
-                <div class="inline-block mt-4 ps-4">
+                <div class="inline-block mt-4 ps-3">
                   <label class="font-bold text-gray-900 text-lg">AI-Powered Simplicity</label>
                   <p class="text-gray-600 text-sm">Save time with smart suggestions for descriptions and layouts</p>
                 </div>
@@ -266,7 +266,7 @@
     </div>
 
     <!-- Transforming Menu Section -->
-    <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8 relative">
+    <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div class="text-center mx-3">
             <button class="bg-gray-100 text-gray-400 px-6 py-2 rounded-full hover:bg-gray-200 transition duration-300 mt-7 mb-3 font-bold">
               3 Easy Steps
@@ -281,7 +281,7 @@
 
         <div class="flex flex-col md:flex-row gap-1 items-center my-20 px-20">
             <!-- First Column -->
-            <div class="bg-white p-0 w-full md:w-1/2 flex flex-col items-center sm:items-start justify-center text-left">
+            <div class="bg-white p-0 w-full md:w-1/2 flex flex-col items-center sm:items-start justify-center text-start">
               <span class="bg-gradient-to-r from-[#FEEEEA] to-[#FFFFFF] text-[#F6522C] px-6 py-2 rounded-md mt-7 mb-3 font-bold">
                 Step-1
               </span>
@@ -316,7 +316,7 @@
             </div>
                     
             <!-- First Column -->
-            <div class="bg-transparent p-4 w-full md:w-1/2 flex flex-col items-center sm:items-start justify-center text-left mt-14">
+            <div class="bg-transparent p-4 w-full md:w-1/2 flex flex-col items-center sm:items-start justify-center text-start mt-14">
                 <span class="bg-gradient-to-r from-[#FEEEEA] to-[#FFFFFF] text-[#F6522C] px-6 py-2 rounded-md mt-7 mb-3 font-bold">
                     Step-2
                 </span>
@@ -350,9 +350,9 @@
     <!-- Transforming Menu Section -->
     <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8 py-10 relative">
 
-        <div class="flex flex-col md:flex-row gap-1 items-center my-20 px-20">
+        <div class="flex flex-col md:flex-row gap-1 items-center mt-20 px-20 overflow-hidden">
             <!-- First Column -->
-            <div class="bg-white p-0 w-full md:w-1/2 flex flex-col items-center sm:items-start justify-center text-left">
+            <div class="bg-white p-0 w-full md:w-1/2 flex flex-col items-center sm:items-start justify-center text-start">
               <span class="bg-gradient-to-r from-[#FEEEEA] to-[#FFFFFF] text-[#F6522C] px-6 py-2 rounded-md mt-7 mb-3 font-bold">
                 Step-3
               </span>
@@ -375,6 +375,49 @@
         </div>
         
     </div>
+
+    <!-- Owners Worldwide Section -->
+
+    <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative bg-[url('{% static 'images/homepage/dotted-world-map-gray-color-vector.png' %}')] bg-cover bg-[60%] bg-center bg-no-repeat bg-opacity-10">
+        <div class="flex flex-col md:flex-row gap-1 items-stretch py-20">
+            <!-- First Column -->
+            <div class="bg-transparent p-2 w-full md:w-1/6 flex flex-col items-center sm:items-start justify-center text-start relative">
+                <img src="{% static 'images/homepage/chipotle.png' %}" alt="chipotle" class="w-auto absolute right-0 top-0">
+                <img src="{% static 'images/homepage/kfc.png' %}" alt="kfc" class="w-auto absolute left-[10%] top-[40%]">
+                <img src="{% static 'images/homepage/kalzbprs.png' %}" alt="kalzbprs" class="w-auto absolute left-[100px] bottom-0">
+            </div>
+
+            <!-- Second Column (Larger Center Column) -->
+            <div class="bg-transparent p-2 w-full md:w-2/3 flex flex-col justify-center items-center">
+                <div class="text-center mx-3">
+                    <h2 class="text-5xl font-bold text-black-900 my-4 leading-tight">
+                        Trusted by 10,000+ Restaurants<br />Owners Worldwide.
+                    </h2>
+                </div>
+
+                <div class="text-center px-20">
+                    <p class="text-lg leading-relaxed my-5">
+                        Join over 10,000+ Restaurants relying on our platform for smarter, faster menu management and improved customer engagement.
+                    </p>
+                </div>
+
+                <div class="text-center mx-3">
+                    <button class="bg-[#3366CC] text-white px-8 py-3 rounded-lg transition duration-300 mb-4 sm:mb-0 font-bold h-[70px]">
+                        START MY FREE TRIAL TODAY
+                    </button>
+                </div>
+            </div>
+
+            <!-- Third Column -->
+            <div class="bg-transparent p-2 w-full md:w-1/6 flex flex-col items-center sm:items-start justify-center text-end relative">
+                <img src="{% static 'images/homepage/dq.png' %}" alt="dq" class="w-auto absolute left-0 top-0">
+                <img src="{% static 'images/homepage/burger-king.png' %}" alt="burger king" class="w-auto absolute left-[-40%] top-[40%]">
+                <img src="{% static 'images/homepage/panda-express.png' %}" alt="panda express" class="w-auto absolute left-[50%] top-[45%]">
+                <img src="{% static 'images/homepage/girl-king.png' %}" alt="girl king" class="w-auto absolute left-[20%] bottom-0">
+            </div>
+        </div>
+    </div>
+
 
       
     

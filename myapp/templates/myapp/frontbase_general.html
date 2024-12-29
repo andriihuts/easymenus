@@ -27,6 +27,32 @@
         menuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
+
+        
+        function toggleAccordion(id) {
+            const item = document.getElementById(`item-${id}`);
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            const isHidden = content.classList.contains('hidden');
+            
+            // Close all other accordions
+            document.querySelectorAll('[id^="item-"]').forEach(item => item.classList.remove('shadow'));
+            document.querySelectorAll('[id^="content-"]').forEach(item => item.classList.add('hidden'));
+            document.querySelectorAll('[id^="icon-"]').forEach(item => item.classList.remove('rotate-45'));
+            document.querySelectorAll('[id^="icon-"]').forEach(item => item.classList.add('bg-[#F6522C]'));
+            document.querySelectorAll('[id^="icon-"]').forEach(item => item.classList.add('text-white'));
+            document.querySelectorAll('[id^="icon-"]').forEach(item => item.classList.remove('text-[#F6522C]'));
+            
+            // Toggle the current accordion
+            if (isHidden) {
+                item.classList.add('shadow');
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-45');
+                icon.classList.remove('bg-[#F6522C]');
+                icon.classList.remove('text-white');
+                icon.classList.add('text-[#F6522C]');
+            }
+          }
     </script>
 </body>
 </html>

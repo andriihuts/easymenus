@@ -103,22 +103,22 @@
         </div>
         <div class="text-center mx-3 flex flex-col md:flex-row justify-between gap-10 my-20">
             <!-- First Div -->
-            <div class="bg-white p-20 rounded-[60px] shadow w-full md:w-1/3">
-              <h3 class="text-gray-900 text-[120px] color-[#0E3339]">90<span class="text-4xl inline-block mt-4 align-text-top">%</span></h3>
+            <div class="bg-white p-4 rounded-[60px] shadow w-full md:w-1/3">
+              <h3 class="text-[120px] text-[#0E3339]">90<span class="text-4xl inline-block mt-4 align-text-top">%</span></h3>
               <label class="block font-bold mb-20">QUICK UPDATES</label>
               <label class="block">Quick menu updates<br />made simple</label>
             </div>
             
             <!-- Second Div -->
-            <div class="bg-white p-20 rounded-[60px] shadow w-full md:w-1/3">
-              <h3 class="text-gray-900 text-[120px] color-[#0E3339]">60<span class="text-4xl inline-block mt-4 align-text-top">%</span></h3>
+            <div class="bg-white p-4 rounded-[60px] shadow w-full md:w-1/3">
+              <h3 class="text-[120px] text-[#0E3339]">60<span class="text-4xl inline-block mt-4 align-text-top">%</span></h3>
               <label class="block font-bold mb-20">CUSTOMER INVOLVEMENT</label>
               <label class="block">Increase in customer<br />engagement online</label>
             </div>
              
             <!-- Third Div -->
-            <div class="bg-white p-20 rounded-[60px] shadow w-full md:w-1/3">
-              <h3 class="text-gray-900 text-[120px] color-[#0E3339]">40<span class="text-4xl inline-block mt-4 align-text-top">%</span></h3>
+            <div class="bg-white p-4 rounded-[60px] shadow w-full md:w-1/3">
+              <h3 class="text-[120px] text-[#0E3339]">40<span class="text-4xl inline-block mt-4 align-text-top">%</span></h3>
               <label class="block font-bold mb-20">BETTER ENGAGEMENT</label>
               <label class="block">More reservations through<br />better visibility</label>
             </div>
@@ -288,6 +288,7 @@
               <h2 class="text-[42px] font-bold text-black-900 my-2">
                 Scan or Upload<br />Your Menu
               </h2>
+              <div class="bg-[#F6522C] px-8 py-[2px] rounded-lg my-8 font-bold h-0"></div>
               <p class="text-[20px] leading-tight my-2">Take your photo of your menu or upload a file, and let our AI extract the details. Easy menus AI will extract your brand style and voice to create the perfect menu</p>
               <button class="bg-white hover:bg-gray-200 border text-gray-400 px-7 py-3 rounded-lg transition duration-300 my-8 sm:mb-0 font-bold h-[50px]">
                 Get Started
@@ -299,7 +300,49 @@
               <img src="{% static 'images/homepage/transforming.png' %}" alt="Easy Menus" class="h-full w-full drop-shadow-lg">
             </div>
         </div>
+        
+    </div>
 
+    <!-- Customize design Section -->
+    <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8">
+
+        <div class="flex flex-col md:flex-row gap-1 items-center my-20 p-20 bg-[url('{% static 'images/homepage/bg-formulation.png' %}')] bg-cover bg-center bg-no-repeat h-full">
+          
+            <!-- Second Column (Larger Center Column) -->
+            <div class="bg-transparent p-4 w-full md:w-1/2 flex justify-center items-center mt-14">
+                <img src="{% static 'images/homepage/enhance.png' %}" alt="Easy Menus" class="h-full w-full drop-shadow-lg">
+            </div>
+                    
+            <!-- First Column -->
+            <div class="bg-transparent p-4 w-full md:w-1/2 flex flex-col items-center sm:items-start justify-center text-left mt-14">
+                <span class="bg-gradient-to-r from-[#FEEEEA] to-[#FFFFFF] text-[#F6522C] px-6 py-2 rounded-md mt-7 mb-3 font-bold">
+                    Step-2
+                </span>
+                <h2 class="text-[42px] font-bold text-black-900 my-2">
+                    Customize<br />Your Design
+                </h2>
+                <div class="bg-[#F6522C] px-8 py-[2px] rounded-lg my-8 font-bold h-0"></div>
+                <p class="text-[20px] leading-tight my-2">Choose from templates, fonts, colors, and layouts to match your brand</p>
+                <ul class="list-decimal space-y-4 my-4">
+                    <li class="flex items-center">
+                        <span class="w-6 h-6 flex items-center justify-center rounded-full bg-[#FEEDEA] text-[#F6522C] font-bold mr-4">1</span>
+                        Select your typography for a personalized touch
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-6 h-6 flex items-center justify-center rounded-full bg-[#FEEDEA] text-[#F6522C] font-bold mr-4">2</span>
+                        Customize the color palette to align with your brand
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-6 h-6 flex items-center justify-center rounded-full bg-[#FEEDEA] text-[#F6522C] font-bold mr-4">3</span>
+                        Enhance content with AI for polished results
+                    </li>
+                </ul>
+                <button class="bg-white hover:bg-gray-200 border text-gray-400 px-7 py-3 rounded-lg transition duration-300 my-8 sm:mb-0 font-bold h-[50px]">
+                    Get Started
+                </button>
+            </div>
+        </div>
+        
         
     </div>
 

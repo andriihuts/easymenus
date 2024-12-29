@@ -266,7 +266,7 @@
     </div>
 
     <!-- Transforming Menu Section -->
-    <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8">
+    <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8 relative">
         <div class="text-center mx-3">
             <button class="bg-gray-100 text-gray-400 px-6 py-2 rounded-full hover:bg-gray-200 transition duration-300 mt-7 mb-3 font-bold">
               3 Easy Steps
@@ -300,6 +300,8 @@
               <img src="{% static 'images/homepage/transforming.png' %}" alt="Easy Menus" class="h-full w-full drop-shadow-lg">
             </div>
         </div>
+
+        <img src="{% static 'images/homepage/dots.png' %}" alt="Easy Menus" class="opacity-10 w-[133px] absolute top-0 left-0 transform translate-x-1/2 translate-y-1/2">
         
     </div>
 
@@ -342,7 +344,35 @@
                 </button>
             </div>
         </div>
-        
+
+    </div>
+
+    <!-- Transforming Menu Section -->
+    <div class="container max-w-7xl mx-auto mt-[85px] px-4 sm:px-6 lg:px-8 py-10 relative">
+
+        <div class="flex flex-col md:flex-row gap-1 items-center my-20 px-20">
+            <!-- First Column -->
+            <div class="bg-white p-0 w-full md:w-1/2 flex flex-col items-center sm:items-start justify-center text-left">
+              <span class="bg-gradient-to-r from-[#FEEEEA] to-[#FFFFFF] text-[#F6522C] px-6 py-2 rounded-md mt-7 mb-3 font-bold">
+                Step-3
+              </span>
+              <h2 class="text-[42px] font-bold text-black-900 my-2">
+                Publish & Share<br />Immediately
+              </h2>
+              <div class="bg-[#F6522C] px-8 py-[2px] rounded-lg my-8 font-bold h-0"></div>
+              <p class="text-[20px] leading-tight my-2">Your menu is online and mobile-friendly</p>
+              <button class="bg-white hover:bg-gray-200 border text-gray-400 px-7 py-3 rounded-lg transition duration-300 my-8 sm:mb-0 font-bold h-[50px]">
+                Get Started
+              </button>
+            </div>
+          
+            <!-- Second Column (Larger Center Column) -->
+            <div class="bg-white p-2 w-full md:w-1/2 flex justify-center items-center">
+              <img src="{% static 'images/homepage/menus.png' %}" alt="Easy Menus" class="h-full w-auto drop-shadow-lg">
+            </div>
+
+            <img src="{% static 'images/homepage/dots.png' %}" alt="Easy Menus" class="opacity-10 w-[133px] absolute bottom-0 right-0 transform translate-x-1/2 -translate-y-1/2">
+        </div>
         
     </div>
 
